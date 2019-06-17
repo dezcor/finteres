@@ -24,13 +24,30 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 const storage = multer.diskStorage({
     destination: path.join(__dirname,'public/img/uploads'),
     filename: (req,file,cb,filename) =>{
         cb(null,uuid() + path.extname(file.originalname));
     }
 });
-app.use(multer({storage:storage}).single('image'));
+
+app.use(multer({
+    storage:storage,
+    limits: {fieldSize: 4000000},
+    fileFilter: (req,file,cb) =>{
+        const filetypes = /jpeg|jpg|png|git/
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname));
+        if (mimetype && extname)
+        {
+            return cb(null,true);
+        }
+        else
+        {
+            cb("Error: Archivo debe ser una imagen");
+        }
+    }}).single('image'));
  /**
   * Global variable
   */

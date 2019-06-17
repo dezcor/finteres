@@ -12,11 +12,7 @@ if (typeof(process.env.CLOUDINARY_URL)=='undefined'){
   console.warn('export CLOUDINARY_URL or set dotenv file')
 }else{
   console.log('cloudinary config:');
-  console.log(cloudinary.config({
-    cloud_name : process.env.CLOUD_NAME , 
-    api_key : process.env.API_KEY , 
-    api_secret : process.env.API_SECRET  
-  }))
+  cloudinary.config()
 }
 
 router.get('/',(req,res) =>{
@@ -78,7 +74,6 @@ router.post('/upload',async (req,res) =>{
 
 router.get('/image/:id',async (req,res)=>{
     const image=await Image.findById(req.params.id);
-    console.log(image);
     res.render("profile",{image});
 })
 
