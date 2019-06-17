@@ -19,9 +19,36 @@ if (typeof(process.env.CLOUDINARY_URL)=='undefined'){
   }))
 }
 
-router.get('/',async (req,res) =>{
-    const images = await Image.find();
-    res.render("index",{images});
+router.get('/',(req,res) =>{
+	const perPage = 9;
+	const page = req.params.page || 1;
+	Image.find({})
+	.skip((perPage * page) - perPage)
+	.limit(perPage)
+	.exec((err,images) =>{
+		Image.count().exec((err,count) =>{
+			if(err) return next(err);
+			res.render("index",{images,
+			current: page,
+			pages: Math.ceil(count/perPage)});
+		})
+	})
+});
+
+router.get('/index/:page',async (req,res,next) =>{
+	const perPage = 9;
+	const page = req.params.page || 1;
+	Image.find({})
+	.skip((perPage * page) - perPage)
+	.limit(perPage)
+	.exec((err,images) =>{
+		Image.count().exec((err,count) =>{
+			if(err) return next(err);
+			res.render("index",{images,
+			current: page,
+			pages: Math.ceil(count/perPage)});
+		})
+	})
 });
 
 router.get('/upload',(req,res) =>{

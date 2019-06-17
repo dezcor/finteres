@@ -3,6 +3,7 @@ const path = require('path');
 const morgan =  require('morgan');
 const multer = require('multer');
 const uuid = require("uuid/v4");
+const bodyParser = require('body-parser')
 const app =express();
 const {format} = require('timeago.js');
 
@@ -19,7 +20,10 @@ app.set("view engine",'ejs');
  * Moddlwares
  */
 app.use(morgan('dev'));
-app.use(express.urlencoded({extended:false}));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 const storage = multer.diskStorage({
     destination: path.join(__dirname,'public/img/uploads'),
     filename: (req,file,cb,filename) =>{
